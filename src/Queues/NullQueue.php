@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue\Queues;
 
 use Sirius\Queue\Contracts\Queue as QueueContract;
 

@@ -1,8 +1,10 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Abstracts;
 
-use Illuminate\Support\InteractsWithTime;
+
+
+use Sirius\Support\Traits\InteractsWithTime;
 
 abstract class Job
 {

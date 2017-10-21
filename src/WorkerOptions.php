@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue;
 
 class WorkerOptions
 {

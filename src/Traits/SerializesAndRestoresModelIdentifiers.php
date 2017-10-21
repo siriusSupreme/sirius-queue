@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue\Traits;
 
 use Sirius\Queue\Contracts\QueueableEntity;
 use Illuminate\Contracts\Database\ModelIdentifier;

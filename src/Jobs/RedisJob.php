@@ -1,9 +1,10 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
-use Illuminate\Queue\RedisQueue;
-use Illuminate\Container\Container;
+use Sirius\Queue\Abstracts\Job;
+use Sirius\Queue\Queues\RedisQueue;
+use Sirius\Container\Container;
 use Sirius\Queue\Contracts\Job as JobContract;
 
 class RedisJob extends Job implements JobContract
@@ -11,7 +12,7 @@ class RedisJob extends Job implements JobContract
     /**
      * The Redis queue instance.
      *
-     * @var \Illuminate\Queue\RedisQueue
+     * @var \Sirius\Queue\Queues\RedisQueue
      */
     protected $redis;
 
@@ -39,12 +40,13 @@ class RedisJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
-     * @param  \Illuminate\Queue\RedisQueue  $redis
+     * @param  \Sirius\Container\Container  $container
+     * @param  \Sirius\Queue\Queues\RedisQueue  $redis
      * @param  string  $job
      * @param  string  $reserved
      * @param  string  $connectionName
      * @param  string  $queue
+     *
      * @return void
      */
     public function __construct(Container $container, RedisQueue $redis, $job, $reserved, $connectionName, $queue)
@@ -120,7 +122,7 @@ class RedisJob extends Job implements JobContract
     /**
      * Get the underlying Redis factory implementation.
      *
-     * @return \Illuminate\Contracts\Redis\Factory
+     * @return \Sirius\Contracts\Redis\Factory
      */
     public function getRedisQueue()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Connectors;
+namespace Sirius\Queue\Connectors;
 
 use Aws\Sqs\SqsClient;
 use Illuminate\Support\Arr;

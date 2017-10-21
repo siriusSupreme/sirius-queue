@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue\Traits;
 
 use Sirius\Queue\Contracts\Job as JobContract;
 

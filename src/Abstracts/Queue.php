@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue\Abstracts;
 
 use DateTimeInterface;
 use Illuminate\Container\Container;

@@ -1,8 +1,9 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
-use Illuminate\Support\InteractsWithTime;
+
+use Sirius\Support\Traits\InteractsWithTime;
 
 class DatabaseJobRecord
 {
@@ -19,7 +20,7 @@ class DatabaseJobRecord
      * Create a new job record instance.
      *
      * @param  \stdClass  $record
-     * @return void
+     *
      */
     public function __construct($record)
     {

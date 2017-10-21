@@ -1,10 +1,11 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
 use Pheanstalk\Pheanstalk;
-use Illuminate\Container\Container;
+use Sirius\Container\Container;
 use Pheanstalk\Job as PheanstalkJob;
+use Sirius\Queue\Abstracts\Job;
 use Sirius\Queue\Contracts\Job as JobContract;
 
 class BeanstalkdJob extends Job implements JobContract
@@ -26,12 +27,11 @@ class BeanstalkdJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
+     * @param  \Sirius\Container\Container  $container
      * @param  \Pheanstalk\Pheanstalk  $pheanstalk
      * @param  \Pheanstalk\Job  $job
      * @param  string  $connectionName
      * @param  string  $queue
-     * @return void
      */
     public function __construct(Container $container, Pheanstalk $pheanstalk, PheanstalkJob $job, $connectionName, $queue)
     {

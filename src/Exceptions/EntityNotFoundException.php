@@ -1,6 +1,6 @@
 <?php
 
-namespace Sirius\Queue\Contracts;
+namespace Sirius\Queue\Exceptions;
 
 use InvalidArgumentException;
 

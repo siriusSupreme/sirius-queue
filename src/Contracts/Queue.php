@@ -78,6 +78,7 @@ interface Queue
      * Pop the next job off of the queue.
      *
      * @param  string  $queue
+     *
      * @return \Sirius\Queue\Contracts\Job|null
      */
     public function pop($queue = null);

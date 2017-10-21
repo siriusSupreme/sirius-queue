@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Connectors;
+namespace Sirius\Queue\Connectors;
 
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Database\ConnectionResolverInterface;

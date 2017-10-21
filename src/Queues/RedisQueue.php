@@ -1,8 +1,8 @@
 <?php
 
-namespace Illuminate\Queue;
+namespace Sirius\Queue\Queues;
 
-use Illuminate\Support\Str;
+use Sirius\Support\Str;
 use Illuminate\Queue\Jobs\RedisJob;
 use Illuminate\Contracts\Redis\Factory as Redis;
 use Sirius\Queue\Contracts\Queue as QueueContract;

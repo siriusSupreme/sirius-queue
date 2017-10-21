@@ -1,9 +1,10 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
 use Aws\Sqs\SqsClient;
-use Illuminate\Container\Container;
+use Sirius\Container\Container;
+use Sirius\Queue\Abstracts\Job;
 use Sirius\Queue\Contracts\Job as JobContract;
 
 class SqsJob extends Job implements JobContract
@@ -25,12 +26,12 @@ class SqsJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
+     * @param  \Sirius\Container\Container  $container
      * @param  \Aws\Sqs\SqsClient  $sqs
      * @param  array   $job
      * @param  string  $connectionName
      * @param  string  $queue
-     * @return void
+     *
      */
     public function __construct(Container $container, SqsClient $sqs, array $job, $connectionName, $queue)
     {

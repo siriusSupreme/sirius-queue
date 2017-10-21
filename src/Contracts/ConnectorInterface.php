@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Connectors;
+namespace Sirius\Queue\Contracts;
 
 interface ConnectorInterface
 {
@@ -8,6 +8,7 @@ interface ConnectorInterface
      * Establish a queue connection.
      *
      * @param  array  $config
+     *
      * @return \Sirius\Queue\Contracts\Queue
      */
     public function connect(array $config);

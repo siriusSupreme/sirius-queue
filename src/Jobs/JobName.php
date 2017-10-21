@@ -1,8 +1,8 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
-use Illuminate\Support\Str;
+use Sirius\Support\Str;
 
 class JobName
 {

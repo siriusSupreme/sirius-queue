@@ -1,9 +1,10 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
-use Illuminate\Container\Container;
-use Illuminate\Queue\DatabaseQueue;
+use Sirius\Container\Container;
+use Sirius\Queue\Abstracts\Job;
+use Sirius\Queue\Queues\DatabaseQueue;
 use Sirius\Queue\Contracts\Job as JobContract;
 
 class DatabaseJob extends Job implements JobContract
@@ -11,7 +12,7 @@ class DatabaseJob extends Job implements JobContract
     /**
      * The database queue instance.
      *
-     * @var \Illuminate\Queue\DatabaseQueue
+     * @var \Sirius\Queue\Queues\DatabaseQueue
      */
     protected $database;
 
@@ -25,12 +26,12 @@ class DatabaseJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
-     * @param  \Illuminate\Queue\DatabaseQueue  $database
+     * @param  \Sirius\Container\Container  $container
+     * @param  \Sirius\Queue\Queues\DatabaseQueue  $database
      * @param  \stdClass  $job
      * @param  string  $connectionName
      * @param  string  $queue
-     * @return void
+     *
      */
     public function __construct(Container $container, DatabaseQueue $database, $job, $connectionName, $queue)
     {

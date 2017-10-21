@@ -1,8 +1,9 @@
 <?php
 
-namespace Illuminate\Queue\Jobs;
+namespace Sirius\Queue\Jobs;
 
-use Illuminate\Container\Container;
+use Sirius\Container\Container;
+use Sirius\Queue\Abstracts\Job;
 use Sirius\Queue\Contracts\Job as JobContract;
 
 class SyncJob extends Job implements JobContract
@@ -24,11 +25,11 @@ class SyncJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container  $container
+     * @param  \Sirius\Container\Container  $container
      * @param  string  $payload
      * @param  string  $connectionName
      * @param  string  $queue
-     * @return void
+     *
      */
     public function __construct(Container $container, $payload, $connectionName, $queue)
     {

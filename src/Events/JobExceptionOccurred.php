@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Events;
+namespace Sirius\Queue\Events;
 
 class JobExceptionOccurred
 {

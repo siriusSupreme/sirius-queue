@@ -2,15 +2,16 @@
 
 namespace Sirius\Queue\Connectors;
 
-use Illuminate\Queue\RedisQueue;
-use Illuminate\Contracts\Redis\Factory as Redis;
+use Sirius\Queue\Queues\RedisQueue;
+use Sirius\Redis\Contracts\Factory as Redis;
+use Sirius\Queue\Contracts\ConnectorInterface;
 
 class RedisConnector implements ConnectorInterface
 {
     /**
      * The Redis database instance.
      *
-     * @var \Illuminate\Contracts\Redis\Factory
+     * @var \Sirius\Redis\Contracts\Factory
      */
     protected $redis;
 
@@ -24,9 +25,9 @@ class RedisConnector implements ConnectorInterface
     /**
      * Create a new Redis queue connector instance.
      *
-     * @param  \Illuminate\Contracts\Redis\Factory  $redis
+     * @param  \Sirius\Redis\Contracts\Factory  $redis
      * @param  string|null  $connection
-     * @return void
+     *
      */
     public function __construct(Redis $redis, $connection = null)
     {

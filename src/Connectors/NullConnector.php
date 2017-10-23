@@ -2,7 +2,8 @@
 
 namespace Sirius\Queue\Connectors;
 
-use Illuminate\Queue\NullQueue;
+use Sirius\Queue\Contracts\ConnectorInterface;
+use Sirius\Queue\Queues\NullQueue;
 
 class NullConnector implements ConnectorInterface
 {

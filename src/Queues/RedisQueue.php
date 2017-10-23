@@ -2,9 +2,11 @@
 
 namespace Sirius\Queue\Queues;
 
+use Sirius\Queue\Abstracts\Queue;
 use Sirius\Support\Str;
-use Illuminate\Queue\Jobs\RedisJob;
-use Illuminate\Contracts\Redis\Factory as Redis;
+use Sirius\Queue\Jobs\RedisJob;
+use Sirius\Queue\LuaScripts;
+use Sirius\Redis\Contracts\Factory as Redis;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 
 class RedisQueue extends Queue implements QueueContract
@@ -12,7 +14,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * The Redis factory implementation.
      *
-     * @var \Illuminate\Contracts\Redis\Factory
+     * @var \Sirius\Redis\Contracts\Factory
      */
     protected $redis;
 
@@ -40,7 +42,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Create a new Redis queue instance.
      *
-     * @param  \Illuminate\Contracts\Redis\Factory  $redis
+     * @param  \Sirius\Redis\Contracts\Factory  $redis
      * @param  string  $default
      * @param  string  $connection
      * @param  int  $retryAfter
@@ -210,7 +212,8 @@ class RedisQueue extends Queue implements QueueContract
      * Delete a reserved job from the queue.
      *
      * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\RedisJob  $job
+     * @param  \Sirius\Queue\Jobs\RedisJob  $job
+     *
      * @return void
      */
     public function deleteReserved($queue, $job)
@@ -222,8 +225,9 @@ class RedisQueue extends Queue implements QueueContract
      * Delete a reserved job from the reserved queue and release it.
      *
      * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\RedisJob  $job
+     * @param  \Sirius\Queue\Jobs\RedisJob  $job
      * @param  int  $delay
+     *
      * @return void
      */
     public function deleteAndRelease($queue, $job, $delay)
@@ -260,7 +264,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Get the connection for the queue.
      *
-     * @return \Illuminate\Redis\Connections\Connection
+     * @return \Sirius\Redis\Abstracts\Connection
      */
     protected function getConnection()
     {
@@ -270,7 +274,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Get the underlying Redis instance.
      *
-     * @return \Illuminate\Contracts\Redis\Factory
+     * @return \Sirius\Redis\Contracts\Factory
      */
     public function getRedis()
     {

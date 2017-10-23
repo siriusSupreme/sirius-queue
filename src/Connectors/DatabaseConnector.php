@@ -4,6 +4,7 @@ namespace Sirius\Queue\Connectors;
 
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Database\ConnectionResolverInterface;
+use Sirius\Queue\Contracts\ConnectorInterface;
 
 class DatabaseConnector implements ConnectorInterface
 {

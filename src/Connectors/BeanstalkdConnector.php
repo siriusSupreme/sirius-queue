@@ -5,7 +5,8 @@ namespace Sirius\Queue\Connectors;
 use Pheanstalk\Connection;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use Illuminate\Queue\BeanstalkdQueue;
+use Sirius\Queue\Contracts\ConnectorInterface;
+use Sirius\Queue\Queues\BeanstalkdQueue;
 
 class BeanstalkdConnector implements ConnectorInterface
 {

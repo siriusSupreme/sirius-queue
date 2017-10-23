@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Failed;
+namespace Sirius\Queue\Contracts;
 
 interface FailedJobProviderInterface
 {

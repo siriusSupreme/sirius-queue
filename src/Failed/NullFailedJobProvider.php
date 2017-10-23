@@ -1,6 +1,8 @@
 <?php
 
-namespace Illuminate\Queue\Failed;
+namespace Sirius\Queue\Failed;
+
+use Sirius\Queue\Contracts\FailedJobProviderInterface;
 
 class NullFailedJobProvider implements FailedJobProviderInterface
 {

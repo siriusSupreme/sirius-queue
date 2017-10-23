@@ -4,7 +4,7 @@ namespace Sirius\Queue;
 
 use Exception;
 use Throwable;
-use Illuminate\Support\Carbon;
+use Sirius\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DetectsLostConnections;
 use Illuminate\Contracts\Debug\ExceptionHandler;

@@ -3,8 +3,9 @@
 namespace Sirius\Queue\Connectors;
 
 use Aws\Sqs\SqsClient;
-use Illuminate\Support\Arr;
-use Illuminate\Queue\SqsQueue;
+use Sirius\Queue\Contracts\ConnectorInterface;
+use Sirius\Support\Arr;
+use Sirius\Queue\Queues\SqsQueue;
 
 class SqsConnector implements ConnectorInterface
 {

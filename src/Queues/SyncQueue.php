@@ -3,8 +3,9 @@
 namespace Sirius\Queue\Queues;
 
 use Exception;
+use Sirius\Queue\Abstracts\Queue;
 use Throwable;
-use Illuminate\Queue\Jobs\SyncJob;
+use Sirius\Queue\Jobs\SyncJob;
 use Sirius\Queue\Contracts\Job;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 use Symfony\Component\Debug\Exception\FatalThrowableError;

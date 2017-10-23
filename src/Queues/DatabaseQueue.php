@@ -2,10 +2,11 @@
 
 namespace Sirius\Queue\Queues;
 
-use Illuminate\Support\Carbon;
+use Sirius\Queue\Abstracts\Queue;
+use Sirius\Support\Carbon;
 use Illuminate\Database\Connection;
-use Illuminate\Queue\Jobs\DatabaseJob;
-use Illuminate\Queue\Jobs\DatabaseJobRecord;
+use Sirius\Queue\Jobs\DatabaseJob;
+use Sirius\Queue\Jobs\DatabaseJobRecord;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 
 class DatabaseQueue extends Queue implements QueueContract
@@ -133,8 +134,9 @@ class DatabaseQueue extends Queue implements QueueContract
      * Release a reserved job back onto the queue.
      *
      * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\DatabaseJobRecord  $job
+     * @param  \Sirius\Queue\Jobs\DatabaseJobRecord  $job
      * @param  int  $delay
+     *
      * @return mixed
      */
     public function release($queue, $job, $delay)
@@ -202,7 +204,8 @@ class DatabaseQueue extends Queue implements QueueContract
      * Get the next available job for the queue.
      *
      * @param  string|null  $queue
-     * @return \Illuminate\Queue\Jobs\DatabaseJobRecord|null
+     *
+     * @return \Sirius\Queue\Jobs\DatabaseJobRecord|null
      */
     protected function getNextAvailableJob($queue)
     {
@@ -252,8 +255,9 @@ class DatabaseQueue extends Queue implements QueueContract
      * Marshal the reserved job into a DatabaseJob instance.
      *
      * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\DatabaseJobRecord  $job
-     * @return \Illuminate\Queue\Jobs\DatabaseJob
+     * @param  \Sirius\Queue\Jobs\DatabaseJobRecord  $job
+     *
+     * @return \Sirius\Queue\Jobs\DatabaseJob
      */
     protected function marshalJob($queue, $job)
     {
@@ -269,8 +273,9 @@ class DatabaseQueue extends Queue implements QueueContract
     /**
      * Mark the given job ID as reserved.
      *
-     * @param  \Illuminate\Queue\Jobs\DatabaseJobRecord  $job
-     * @return \Illuminate\Queue\Jobs\DatabaseJobRecord
+     * @param  \Sirius\Queue\Jobs\DatabaseJobRecord  $job
+     *
+     * @return \Sirius\Queue\Jobs\DatabaseJobRecord
      */
     protected function markJobAsReserved($job)
     {

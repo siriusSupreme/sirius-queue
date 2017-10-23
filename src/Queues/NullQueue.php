@@ -2,6 +2,7 @@
 
 namespace Sirius\Queue\Queues;
 
+use Sirius\Queue\Abstracts\Queue;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 
 class NullQueue extends Queue implements QueueContract

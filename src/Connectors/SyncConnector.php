@@ -2,7 +2,8 @@
 
 namespace Sirius\Queue\Connectors;
 
-use Illuminate\Queue\SyncQueue;
+use Sirius\Queue\Queues\SyncQueue;
+use Sirius\Queue\Contracts\ConnectorInterface;
 
 class SyncConnector implements ConnectorInterface
 {

@@ -3,8 +3,9 @@
 namespace Sirius\Queue\Abstracts;
 
 use DateTimeInterface;
-use Illuminate\Container\Container;
-use Illuminate\Support\InteractsWithTime;
+use Sirius\Container\Container;
+use Sirius\Queue\Exceptions\InvalidPayloadException;
+use Sirius\Support\Traits\InteractsWithTime;
 
 abstract class Queue
 {
@@ -13,14 +14,14 @@ abstract class Queue
     /**
      * The IoC container instance.
      *
-     * @var \Illuminate\Container\Container
+     * @var \Sirius\Container\Container
      */
     protected $container;
 
     /**
      * The encrypter implementation.
      *
-     * @var \Illuminate\Contracts\Encryption\Encrypter
+     * @var \Sirius\Encrypt\Contracts\Encrypter
      */
     protected $encrypter;
 
@@ -78,9 +79,10 @@ abstract class Queue
      *
      * @param  string  $job
      * @param  mixed   $data
+     *
      * @return string
      *
-     * @throws \Illuminate\Queue\InvalidPayloadException
+     * @throws \Sirius\Queue\Exceptions\InvalidPayloadException
      */
     protected function createPayload($job, $data = '')
     {
@@ -202,7 +204,8 @@ abstract class Queue
     /**
      * Set the IoC container instance.
      *
-     * @param  \Illuminate\Container\Container  $container
+     * @param  \Sirius\Container\Container  $container
+     *
      * @return void
      */
     public function setContainer(Container $container)

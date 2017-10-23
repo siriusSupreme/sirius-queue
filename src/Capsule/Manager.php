@@ -1,14 +1,14 @@
 <?php
 
-namespace Illuminate\Queue\Capsule;
+namespace Sirius\Queue\Capsule;
 
-use Illuminate\Queue\QueueManager;
-use Illuminate\Container\Container;
-use Illuminate\Queue\QueueServiceProvider;
-use Illuminate\Support\Traits\CapsuleManagerTrait;
+use Sirius\Queue\QueueManager;
+use Sirius\Container\Container;
+use Sirius\Queue\QueueServiceProvider;
+use Sirius\Queue\Traits\CapsuleManagerTrait;
 
 /**
- * @mixin \Illuminate\Queue\QueueManager
+ * @mixin \Sirius\Queue\QueueManager
  * @mixin \Sirius\Queue\Contracts\Queue
  */
 class Manager
@@ -18,15 +18,15 @@ class Manager
     /**
      * The queue manager instance.
      *
-     * @var \Illuminate\Queue\QueueManager
+     * @var \Sirius\Queue\QueueManager
      */
     protected $manager;
 
     /**
      * Create a new queue capsule manager.
      *
-     * @param  \Illuminate\Container\Container  $container
-     * @return void
+     * @param  \Sirius\Container\Container  $container
+     *
      */
     public function __construct(Container $container = null)
     {
@@ -69,9 +69,7 @@ class Manager
      */
     protected function registerConnectors()
     {
-        $provider = new QueueServiceProvider($this->container);
 
-        $provider->registerConnectors($this->manager);
     }
 
     /**
@@ -154,7 +152,7 @@ class Manager
     /**
      * Get the queue manager instance.
      *
-     * @return \Illuminate\Queue\QueueManager
+     * @return \Sirius\Queue\QueueManager
      */
     public function getQueueManager()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Queue\Console;
+namespace Sirius\Queue\Console;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;

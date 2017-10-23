@@ -4,7 +4,8 @@ namespace Sirius\Queue\Queues;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Job as PheanstalkJob;
-use Illuminate\Queue\Jobs\BeanstalkdJob;
+use Sirius\Queue\Abstracts\Queue;
+use Sirius\Queue\Jobs\BeanstalkdJob;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 
 class BeanstalkdQueue extends Queue implements QueueContract
@@ -36,7 +37,7 @@ class BeanstalkdQueue extends Queue implements QueueContract
      * @param  \Pheanstalk\Pheanstalk  $pheanstalk
      * @param  string  $default
      * @param  int  $timeToRun
-     * @return void
+     *
      */
     public function __construct(Pheanstalk $pheanstalk, $default, $timeToRun)
     {

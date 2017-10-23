@@ -3,7 +3,8 @@
 namespace Sirius\Queue\Queues;
 
 use Aws\Sqs\SqsClient;
-use Illuminate\Queue\Jobs\SqsJob;
+use Sirius\Queue\Jobs\SqsJob;
+use Sirius\Queue\Abstracts\Queue;
 use Sirius\Queue\Contracts\Queue as QueueContract;
 
 class SqsQueue extends Queue implements QueueContract
@@ -35,7 +36,7 @@ class SqsQueue extends Queue implements QueueContract
      * @param  \Aws\Sqs\SqsClient  $sqs
      * @param  string  $default
      * @param  string  $prefix
-     * @return void
+     *
      */
     public function __construct(SqsClient $sqs, $default, $prefix = '')
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Illuminate\Queue\Failed;
+namespace Sirius\Queue\Failed;
 
-use Illuminate\Support\Carbon;
+use Sirius\Support\Carbon;
 use Illuminate\Database\ConnectionResolverInterface;
 
 class DatabaseFailedJobProvider implements FailedJobProviderInterface

@@ -2,9 +2,8 @@
 
 namespace Sirius\Queue\Abstracts;
 
-
-
 use Sirius\Support\Traits\InteractsWithTime;
+use Sirius\Queue\Jobs\JobName;
 
 abstract class Job
 {
@@ -20,7 +19,7 @@ abstract class Job
     /**
      * The IoC container instance.
      *
-     * @var \Illuminate\Container\Container
+     * @var \Sirius\Container\Container
      */
     protected $container;
 
@@ -264,7 +263,7 @@ abstract class Job
     /**
      * Get the service container instance.
      *
-     * @return \Illuminate\Container\Container
+     * @return \Sirius\Container\Container
      */
     public function getContainer()
     {

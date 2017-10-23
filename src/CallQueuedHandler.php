@@ -13,7 +13,7 @@ class CallQueuedHandler
     /**
      * The bus dispatcher implementation.
      *
-     * @var \Illuminate\Contracts\Bus\Dispatcher
+     * @var \Sirius\Bus\Contracts\Dispatcher
      */
     protected $dispatcher;
 

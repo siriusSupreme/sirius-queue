@@ -121,7 +121,7 @@ abstract class Queue
     {
         return [
             'displayName' => $this->getDisplayName($job),
-            'job' => 'Illuminate\Queue\CallQueuedHandler@call',
+            'job' => 'Sirius\Queue\CallQueuedHandler@call',
             'maxTries' => $job->tries ?? null,
             'timeout' => $job->timeout ?? null,
             'timeoutAt' => $this->getJobExpiration($job),
@@ -153,7 +153,7 @@ abstract class Queue
     public function getJobExpiration($job)
     {
         if (! method_exists($job, 'retryUntil') && ! isset($job->timeoutAt)) {
-            return;
+            return null;
         }
 
         $expiration = $job->timeoutAt ?? $job->retryUntil();

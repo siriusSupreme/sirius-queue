@@ -5,8 +5,7 @@ namespace Sirius\Queue;
 use Exception;
 use ReflectionClass;
 use Sirius\Queue\Contracts\Job;
-use Illuminate\Contracts\Bus\Dispatcher;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Sirius\Bus\Contracts\Dispatcher;
 
 class CallQueuedHandler
 {
@@ -20,7 +19,7 @@ class CallQueuedHandler
     /**
      * Create a new handler instance.
      *
-     * @param  \Illuminate\Contracts\Bus\Dispatcher  $dispatcher
+     * @param  \Sirius\Bus\Contracts\Dispatcher  $dispatcher
      * @return void
      */
     public function __construct(Dispatcher $dispatcher)
@@ -33,7 +32,7 @@ class CallQueuedHandler
      *
      * @param  \Sirius\Queue\Contracts\Job  $job
      * @param  array  $data
-     * @return void
+     *
      */
     public function call(Job $job, array $data)
     {
@@ -41,7 +40,7 @@ class CallQueuedHandler
             $command = $this->setJobInstanceIfNecessary(
                 $job, unserialize($data['command'])
             );
-        } catch (ModelNotFoundException $e) {
+        } catch (\RuntimeException $e) {
             return $this->handleModelNotFound($job, $e);
         }
 

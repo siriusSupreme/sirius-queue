@@ -4,7 +4,6 @@ namespace Sirius\Queue\Capsule;
 
 use Sirius\Queue\QueueManager;
 use Sirius\Container\Container;
-use Sirius\Queue\QueueServiceProvider;
 use Sirius\Queue\Traits\CapsuleManagerTrait;
 
 /**

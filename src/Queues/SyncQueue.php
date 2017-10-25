@@ -4,11 +4,11 @@ namespace Sirius\Queue\Queues;
 
 use Exception;
 use Sirius\Queue\Abstracts\Queue;
-use Throwable;
-use Sirius\Queue\Jobs\SyncJob;
-use Sirius\Queue\Contracts\Job;
 use Sirius\Queue\Contracts\Queue as QueueContract;
+use Sirius\Queue\Jobs\FailingJob;
+use Sirius\Queue\Jobs\SyncJob;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 
 class SyncQueue extends Queue implements QueueContract
 {
@@ -38,11 +38,7 @@ class SyncQueue extends Queue implements QueueContract
         $queueJob = $this->resolveJob($this->createPayload($job, $data), $queue);
 
         try {
-            $this->raiseBeforeJobEvent($queueJob);
-
             $queueJob->fire();
-
-            $this->raiseAfterJobEvent($queueJob);
         } catch (Exception $e) {
             $this->handleException($queueJob, $e);
         } catch (Throwable $e) {
@@ -57,7 +53,7 @@ class SyncQueue extends Queue implements QueueContract
      *
      * @param  string  $payload
      * @param  string  $queue
-     * @return \Illuminate\Queue\Jobs\SyncJob
+     * @return \Sirius\Queue\Jobs\SyncJob
      */
     protected function resolveJob($payload, $queue)
     {
@@ -65,58 +61,17 @@ class SyncQueue extends Queue implements QueueContract
     }
 
     /**
-     * Raise the before queue job event.
-     *
-     * @param  \Sirius\Queue\Contracts\Job  $job
-     * @return void
-     */
-    protected function raiseBeforeJobEvent(Job $job)
-    {
-        if ($this->container->bound('events')) {
-            $this->container['events']->dispatch(new Events\JobProcessing($this->connectionName, $job));
-        }
-    }
-
-    /**
-     * Raise the after queue job event.
-     *
-     * @param  \Sirius\Queue\Contracts\Job  $job
-     * @return void
-     */
-    protected function raiseAfterJobEvent(Job $job)
-    {
-        if ($this->container->bound('events')) {
-            $this->container['events']->dispatch(new Events\JobProcessed($this->connectionName, $job));
-        }
-    }
-
-    /**
-     * Raise the exception occurred queue job event.
-     *
-     * @param  \Sirius\Queue\Contracts\Job  $job
-     * @param  \Exception  $e
-     * @return void
-     */
-    protected function raiseExceptionOccurredJobEvent(Job $job, $e)
-    {
-        if ($this->container->bound('events')) {
-            $this->container['events']->dispatch(new Events\JobExceptionOccurred($this->connectionName, $job, $e));
-        }
-    }
-
-    /**
      * Handle an exception that occurred while processing a job.
      *
-     * @param  \Illuminate\Queue\Jobs\Job  $queueJob
+     * @param  \Sirius\Queue\Abstracts\Job  $queueJob
      * @param  \Exception  $e
+     *
      * @return void
      *
      * @throws \Exception
      */
     protected function handleException($queueJob, $e)
     {
-        $this->raiseExceptionOccurredJobEvent($queueJob, $e);
-
         FailingJob::handle($this->connectionName, $queueJob, $e);
 
         throw $e;

@@ -5,7 +5,10 @@ namespace Sirius\Queue;
 use Exception;
 use ReflectionClass;
 use Sirius\Queue\Contracts\Job;
+use Sirius\Queue\Jobs\FailingJob;
+use Sirius\Queue\Traits\InteractsWithQueue;
 use Sirius\Bus\Contracts\Dispatcher;
+use function Sirius\Support\class_uses_recursive;
 
 class CallQueuedHandler
 {
@@ -20,7 +23,7 @@ class CallQueuedHandler
      * Create a new handler instance.
      *
      * @param  \Sirius\Bus\Contracts\Dispatcher  $dispatcher
-     * @return void
+     *
      */
     public function __construct(Dispatcher $dispatcher)
     {
@@ -109,7 +112,7 @@ class CallQueuedHandler
      *
      * @param  \Sirius\Queue\Contracts\Job  $job
      * @param  \Exception  $e
-     * @return void
+     *
      */
     protected function handleModelNotFound(Job $job, $e)
     {
@@ -126,7 +129,7 @@ class CallQueuedHandler
             return $job->delete();
         }
 
-        return FailingJob::handle(
+        FailingJob::handle(
             $job->getConnectionName(), $job, $e
         );
     }

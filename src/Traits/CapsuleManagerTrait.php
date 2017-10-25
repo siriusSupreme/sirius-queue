@@ -3,7 +3,7 @@
 namespace Sirius\Queue\Traits;
 
 use Sirius\Support\Fluent;
-use Sirius\Container\Contracts\Container;
+use Sirius\Container\Container;
 
 trait CapsuleManagerTrait
 {
@@ -17,14 +17,14 @@ trait CapsuleManagerTrait
     /**
      * The container instance.
      *
-     * @var \Sirius\Container\Contracts\Container
+     * @var \Sirius\Container\Container
      */
     protected $container;
 
     /**
      * Setup the IoC container instance.
      *
-     * @param  \Sirius\Container\Contracts\Container  $container
+     * @param  \Sirius\Container\Container  $container
      * @return void
      */
     protected function setupContainer(Container $container)
@@ -49,7 +49,7 @@ trait CapsuleManagerTrait
     /**
      * Get the IoC container instance.
      *
-     * @return \Sirius\Container\Contracts\Container
+     * @return \Sirius\Container\Container
      */
     public function getContainer()
     {
@@ -59,7 +59,7 @@ trait CapsuleManagerTrait
     /**
      * Set the IoC container instance.
      *
-     * @param  \Sirius\Container\Contracts\Container  $container
+     * @param  \Sirius\Container\Container  $container
      * @return void
      */
     public function setContainer(Container $container)

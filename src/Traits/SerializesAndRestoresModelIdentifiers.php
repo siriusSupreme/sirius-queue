@@ -3,9 +3,7 @@
 namespace Sirius\Queue\Traits;
 
 use Sirius\Queue\Contracts\QueueableEntity;
-use Illuminate\Contracts\Database\ModelIdentifier;
 use Sirius\Queue\Contracts\QueueableCollection;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 trait SerializesAndRestoresModelIdentifiers
 {
@@ -57,8 +55,8 @@ trait SerializesAndRestoresModelIdentifiers
     /**
      * Restore a queueable collection instance.
      *
-     * @param  \Illuminate\Contracts\Database\ModelIdentifier  $value
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param
+     * @return
      */
     protected function restoreCollection($value)
     {
@@ -75,8 +73,8 @@ trait SerializesAndRestoresModelIdentifiers
     /**
      * Get the query for restoration.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param    $model
+     * @return
      */
     protected function getQueryForModelRestoration($model)
     {

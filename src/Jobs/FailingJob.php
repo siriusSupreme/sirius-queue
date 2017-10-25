@@ -1,11 +1,9 @@
 <?php
 
-namespace Sirius\Queue;
+namespace Sirius\Queue\Jobs;
 
 use Sirius\Container\Container;
-use Sirius\Queue\Events\JobFailed;
 use Sirius\Event\Contracts\Dispatcher;
-use Sirius\Queue\Exceptions\ManuallyFailedException;
 
 class FailingJob
 {
@@ -15,7 +13,7 @@ class FailingJob
      * @param  string  $connectionName
      * @param  \Sirius\Queue\Abstracts\Job  $job
      * @param  \Exception $e
-     *
+     * @return void
      */
     public static function handle($connectionName, $job, $e = null)
     {
@@ -33,9 +31,7 @@ class FailingJob
 
             $job->failed($e);
         } finally {
-            static::events()->dispatch(new JobFailed(
-                $connectionName, $job, $e ?: new ManuallyFailedException()
-            ));
+            // TODO
         }
     }
 

@@ -3,6 +3,7 @@
 namespace Sirius\Queue\Traits;
 
 use Sirius\Queue\Contracts\Job as JobContract;
+use Sirius\Queue\Jobs\FailingJob;
 
 trait InteractsWithQueue
 {
@@ -26,12 +27,11 @@ trait InteractsWithQueue
     /**
      * Delete the job from the queue.
      *
-     * @return void
      */
     public function delete()
     {
         if ($this->job) {
-            return $this->job->delete();
+          $this->job->delete();
         }
     }
 

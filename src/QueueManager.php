@@ -4,6 +4,7 @@ namespace Sirius\Queue;
 
 use Closure;
 use InvalidArgumentException;
+use Sirius\Container\Container;
 use Sirius\Queue\Contracts\Factory as FactoryContract;
 use Sirius\Queue\Contracts\Monitor as MonitorContract;
 use Sirius\Support\Contracts\Repository;
@@ -52,10 +53,10 @@ class QueueManager implements FactoryContract, MonitorContract
     /**
      * Create a new queue manager instance.
      *
-     * @param  \Sirius\Container\Container  $container
+     * @param  \Sirius\Container\Container|null  $container
      * @param  \Sirius\Support\Contracts\Repository|array
      */
-    public function __construct($container,$config=[])
+    public function __construct($container=null,$config=[])
     {
 
 //      加载默认配置
@@ -73,20 +74,20 @@ class QueueManager implements FactoryContract, MonitorContract
 
       self::$instance = $this;
 
-        $this->container = $container;
+        $this->container = $container??new Container;
     }
 
 
   /**
    * 获取 队列 管理器 实例
    *
-   * @param $container
+   * @param \Sirius\Container\Container|null $container
    * @param \Sirius\Support\Contracts\Repository|array $config
    * @param bool $force
    *
    * @return null|QueueManager
    */
-  public static function getInstance( $container, $config = [], $force = false ) {
+  public static function getInstance( $container=null, $config = [], $force = false ) {
     if ( is_null( self::$instance ) || $force === true ) {
       self::$instance = new self( $container, $config );
     }

@@ -1,13 +1,14 @@
 <?php
 
-namespace Sirius\Queue\Abstracts;
+namespace Sirius\Queue\Queues;
 
 use DateTimeInterface;
 use Sirius\Container\Container;
 use Sirius\Queue\Exceptions\InvalidPayloadException;
 use Sirius\Support\Traits\InteractsWithTime;
+use \Sirius\Queue\Contracts\Queue as QueueContract;
 
-abstract class Queue
+abstract class Queue implements QueueContract
 {
     use InteractsWithTime;
 

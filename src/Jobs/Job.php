@@ -1,11 +1,11 @@
 <?php
 
-namespace Sirius\Queue\Abstracts;
+namespace Sirius\Queue\Jobs;
 
 use Sirius\Support\Traits\InteractsWithTime;
-use Sirius\Queue\Jobs\JobName;
+use \Sirius\Queue\Contracts\Job as JobContract;
 
-abstract class Job
+abstract class Job implements JobContract
 {
     use InteractsWithTime;
 
@@ -62,6 +62,13 @@ abstract class Job
      * @return string
      */
     abstract public function getRawBody();
+
+  /**
+   * Get the number of times the job has been attempted.
+   *
+   * @return int
+   */
+  abstract public function attempts();
 
     /**
      * Fire the job.

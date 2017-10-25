@@ -3,10 +3,8 @@
 namespace Sirius\Queue\Jobs;
 
 use Sirius\Container\Container;
-use Sirius\Queue\Abstracts\Job;
-use Sirius\Queue\Contracts\Job as JobContract;
 
-class SyncJob extends Job implements JobContract
+class SyncJob extends Job
 {
     /**
      * The class name of the job.

@@ -4,10 +4,8 @@ namespace Sirius\Queue\Jobs;
 
 use Aws\Sqs\SqsClient;
 use Sirius\Container\Container;
-use Sirius\Queue\Abstracts\Job;
-use Sirius\Queue\Contracts\Job as JobContract;
 
-class SqsJob extends Job implements JobContract
+class SqsJob extends Job
 {
     /**
      * The Amazon SQS client instance.

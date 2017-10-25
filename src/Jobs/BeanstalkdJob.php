@@ -5,10 +5,8 @@ namespace Sirius\Queue\Jobs;
 use Pheanstalk\Pheanstalk;
 use Sirius\Container\Container;
 use Pheanstalk\Job as PheanstalkJob;
-use Sirius\Queue\Abstracts\Job;
-use Sirius\Queue\Contracts\Job as JobContract;
 
-class BeanstalkdJob extends Job implements JobContract
+class BeanstalkdJob extends Job
 {
     /**
      * The Pheanstalk instance.

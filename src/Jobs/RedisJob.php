@@ -2,12 +2,10 @@
 
 namespace Sirius\Queue\Jobs;
 
-use Sirius\Queue\Abstracts\Job;
 use Sirius\Queue\Queues\RedisQueue;
 use Sirius\Container\Container;
-use Sirius\Queue\Contracts\Job as JobContract;
 
-class RedisJob extends Job implements JobContract
+class RedisJob extends Job
 {
     /**
      * The Redis queue instance.

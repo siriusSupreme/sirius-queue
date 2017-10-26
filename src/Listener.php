@@ -55,7 +55,7 @@ class Listener
      * Create a new queue listener.
      *
      * @param  string  $commandPath
-     * @return void
+     *
      */
     public function __construct($commandPath)
     {
@@ -104,7 +104,8 @@ class Listener
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  \Illuminate\Queue\ListenerOptions  $options
+     * @param  \Sirius\Queue\ListenerOptions  $options
+     *
      * @return void
      */
     public function listen($connection, $queue, ListenerOptions $options)
@@ -121,7 +122,8 @@ class Listener
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  \Illuminate\Queue\ListenerOptions  $options
+     * @param  \Sirius\Queue\ListenerOptions  $options
+     *
      * @return \Symfony\Component\Process\Process
      */
     public function makeProcess($connection, $queue, ListenerOptions $options)
@@ -151,7 +153,7 @@ class Listener
      * Add the environment option to the given command.
      *
      * @param  string  $command
-     * @param  \Illuminate\Queue\ListenerOptions  $options
+     * @param  \Sirius\Queue\ListenerOptions  $options
      * @return string
      */
     protected function addEnvironment($command, ListenerOptions $options)
@@ -165,7 +167,7 @@ class Listener
      * @param  string  $command
      * @param  string  $connection
      * @param  string  $queue
-     * @param  \Illuminate\Queue\ListenerOptions  $options
+     * @param  \Sirius\Queue\ListenerOptions  $options
      * @return string
      */
     protected function formatCommand($command, $connection, $queue, ListenerOptions $options)

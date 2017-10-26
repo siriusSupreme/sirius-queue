@@ -8,16 +8,16 @@ use Sirius\Queue\Contracts\Factory as FactoryContract;
 use Sirius\Queue\Contracts\Monitor as MonitorContract;
 
 /**
- * @mixin \Illuminate\Contracts\Queue\Queue
+ * @mixin \Sirius\Queue\Contracts\Queue
  */
 class QueueManager implements FactoryContract, MonitorContract
 {
     /**
      * The application instance.
      *
-     * @var \Illuminate\Foundation\Application
+     * @var \Sirius\Container\Container
      */
-    protected $app;
+    protected $container;
 
     /**
      * The array of resolved queue connections.
@@ -36,12 +36,12 @@ class QueueManager implements FactoryContract, MonitorContract
     /**
      * Create a new queue manager instance.
      *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
+     * @param  \Sirius\Container\Container  $container
+     *
      */
-    public function __construct($app)
+    public function __construct($container)
     {
-        $this->app = $app;
+        $this->container = $container;
     }
 
     /**
@@ -52,7 +52,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function before($callback)
     {
-        $this->app['events']->listen(Events\JobProcessing::class, $callback);
+        $this->container['events']->listen(Events\JobProcessing::class, $callback);
     }
 
     /**
@@ -63,7 +63,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function after($callback)
     {
-        $this->app['events']->listen(Events\JobProcessed::class, $callback);
+        $this->container['events']->listen(Events\JobProcessed::class, $callback);
     }
 
     /**
@@ -74,7 +74,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function exceptionOccurred($callback)
     {
-        $this->app['events']->listen(Events\JobExceptionOccurred::class, $callback);
+        $this->container['events']->listen(Events\JobExceptionOccurred::class, $callback);
     }
 
     /**
@@ -85,7 +85,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function looping($callback)
     {
-        $this->app['events']->listen(Events\Looping::class, $callback);
+        $this->container['events']->listen(Events\Looping::class, $callback);
     }
 
     /**
@@ -96,7 +96,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function failing($callback)
     {
-        $this->app['events']->listen(Events\JobFailed::class, $callback);
+        $this->container['events']->listen(Events\JobFailed::class, $callback);
     }
 
     /**
@@ -107,7 +107,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function stopping($callback)
     {
-        $this->app['events']->listen(Events\WorkerStopping::class, $callback);
+        $this->container['events']->listen(Events\WorkerStopping::class, $callback);
     }
 
     /**
@@ -125,7 +125,8 @@ class QueueManager implements FactoryContract, MonitorContract
      * Resolve a queue connection instance.
      *
      * @param  string  $name
-     * @return \Illuminate\Contracts\Queue\Queue
+     *
+     * @return \Sirius\Queue\Contracts\Queue
      */
     public function connection($name = null)
     {
@@ -137,7 +138,7 @@ class QueueManager implements FactoryContract, MonitorContract
         if (! isset($this->connections[$name])) {
             $this->connections[$name] = $this->resolve($name);
 
-            $this->connections[$name]->setContainer($this->app);
+            $this->connections[$name]->setContainer($this->container);
         }
 
         return $this->connections[$name];
@@ -147,7 +148,8 @@ class QueueManager implements FactoryContract, MonitorContract
      * Resolve a queue connection.
      *
      * @param  string  $name
-     * @return \Illuminate\Contracts\Queue\Queue
+     *
+     * @return \Sirius\Queue\Contracts\Queue
      */
     protected function resolve($name)
     {
@@ -162,7 +164,8 @@ class QueueManager implements FactoryContract, MonitorContract
      * Get the connector for a given driver.
      *
      * @param  string  $driver
-     * @return \Illuminate\Queue\Connectors\ConnectorInterface
+     *
+     * @return \Sirius\Queue\Contracts\ConnectorInterface
      *
      * @throws \InvalidArgumentException
      */
@@ -180,11 +183,11 @@ class QueueManager implements FactoryContract, MonitorContract
      *
      * @param  string    $driver
      * @param  \Closure  $resolver
-     * @return void
+     *
      */
     public function extend($driver, Closure $resolver)
     {
-        return $this->addConnector($driver, $resolver);
+        $this->addConnector($driver, $resolver);
     }
 
     /**
@@ -208,7 +211,7 @@ class QueueManager implements FactoryContract, MonitorContract
     protected function getConfig($name)
     {
         if (! is_null($name) && $name !== 'null') {
-            return $this->app['config']["queue.connections.{$name}"];
+            return $this->container['config']["queue.connections.{$name}"];
         }
 
         return ['driver' => 'null'];
@@ -221,7 +224,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function getDefaultDriver()
     {
-        return $this->app['config']['queue.default'];
+        return $this->container['config']['queue.default'];
     }
 
     /**
@@ -232,7 +235,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function setDefaultDriver($name)
     {
-        $this->app['config']['queue.default'] = $name;
+        $this->container['config']['queue.default'] = $name;
     }
 
     /**
@@ -246,15 +249,6 @@ class QueueManager implements FactoryContract, MonitorContract
         return $connection ?: $this->getDefaultDriver();
     }
 
-    /**
-     * Determine if the application is in maintenance mode.
-     *
-     * @return bool
-     */
-    public function isDownForMaintenance()
-    {
-        return $this->app->isDownForMaintenance();
-    }
 
     /**
      * Dynamically pass calls to the default connection.

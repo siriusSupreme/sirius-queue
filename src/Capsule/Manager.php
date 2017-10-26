@@ -4,6 +4,7 @@ namespace Sirius\Queue\Capsule;
 
 use Sirius\Queue\QueueManager;
 use Sirius\Container\Container;
+use Sirius\Queue\QueueServiceProvider;
 use Sirius\Queue\Traits\CapsuleManagerTrait;
 
 /**
@@ -68,13 +69,16 @@ class Manager
      */
     protected function registerConnectors()
     {
+        $provider = new QueueServiceProvider($this->container);
 
+        $provider->registerConnectors($this->manager);
     }
 
     /**
      * Get a connection instance from the global manager.
      *
      * @param  string  $connection
+     *
      * @return \Sirius\Queue\Contracts\Queue
      */
     public static function connection($connection = null)
@@ -129,6 +133,7 @@ class Manager
      * Get a registered connection instance.
      *
      * @param  string  $name
+     *
      * @return \Sirius\Queue\Contracts\Queue
      */
     public function getConnection($name = null)

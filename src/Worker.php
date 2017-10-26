@@ -3,11 +3,13 @@
 namespace Sirius\Queue;
 
 use Exception;
-use Sirius\Queue\Traits\DetectsLostConnections;
-use Throwable;
-use Sirius\Support\Carbon;
 use Sirius\Event\Dispatcher;
+use Sirius\Queue\Exceptions\ManuallyFailedException;
+use Sirius\Queue\Jobs\FailingJob;
+use Sirius\Queue\Traits\DetectsLostConnections;
+use Sirius\Support\Carbon;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 
 class Worker
 {
@@ -16,30 +18,17 @@ class Worker
     /**
      * The queue manager instance.
      *
-     * @var \Illuminate\Queue\QueueManager
+     * @var \Sirius\Queue\QueueManager
      */
     protected $manager;
 
     /**
      * The event dispatcher instance.
      *
-     * @var \Illuminate\Contracts\Events\Dispatcher
+     * @var \Sirius\Event\Dispatcher
      */
     protected $events;
 
-    /**
-     * The cache repository implementation.
-     *
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    protected $cache;
-
-    /**
-     * The exception handler instance.
-     *
-     * @var \Illuminate\Contracts\Debug\ExceptionHandler
-     */
-    protected $exceptions;
 
     /**
      * Indicates if the worker should exit.
@@ -58,18 +47,15 @@ class Worker
     /**
      * Create a new queue worker.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
-     * @param  \Illuminate\Contracts\Debug\ExceptionHandler  $exceptions
-     * @return void
+     * @param  \Sirius\Queue\QueueManager  $manager
+     * @param  \Sirius\Event\Dispatcher  $events
+     *
      */
     public function __construct(QueueManager $manager,
-                                Dispatcher $events,
-                                ExceptionHandler $exceptions)
+                                Dispatcher $events)
     {
         $this->events = $events;
         $this->manager = $manager;
-        $this->exceptions = $exceptions;
     }
 
     /**
@@ -77,7 +63,8 @@ class Worker
      *
      * @param  string  $connectionName
      * @param  string  $queue
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\WorkerOptions  $options
+     *
      * @return void
      */
     public function daemon($connectionName, $queue, WorkerOptions $options)
@@ -124,8 +111,9 @@ class Worker
     /**
      * Register the worker timeout handler (PHP 7.1+).
      *
-     * @param  \Illuminate\Contracts\Queue\Job|null  $job
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\Jobs\Job|null  $job
+     * @param  \Sirius\Queue\WorkerOptions  $options
+     *
      * @return void
      */
     protected function registerTimeoutHandler($job, WorkerOptions $options)
@@ -147,8 +135,9 @@ class Worker
     /**
      * Get the appropriate timeout for the given job.
      *
-     * @param  \Illuminate\Contracts\Queue\Job|null  $job
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\Jobs\Job|null  $job
+     * @param  \Sirius\Queue\WorkerOptions  $options
+     *
      * @return int
      */
     protected function timeoutForJob($job, WorkerOptions $options)
@@ -159,14 +148,15 @@ class Worker
     /**
      * Determine if the daemon should process on this iteration.
      *
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\WorkerOptions  $options
      * @param  string  $connectionName
      * @param  string  $queue
+     *
      * @return bool
      */
     protected function daemonShouldRun(WorkerOptions $options, $connectionName, $queue)
     {
-        return ! (($this->manager->isDownForMaintenance() && ! $options->force) ||
+        return ! ( ! $options->force ||
             $this->paused ||
             $this->events->until(new Events\Looping($connectionName, $queue)) === false);
     }
@@ -174,8 +164,9 @@ class Worker
     /**
      * Pause the worker for the current loop.
      *
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\WorkerOptions  $options
      * @param  int  $lastRestart
+     *
      * @return void
      */
     protected function pauseWorker(WorkerOptions $options, $lastRestart)
@@ -188,7 +179,7 @@ class Worker
     /**
      * Stop the process if necessary.
      *
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\WorkerOptions  $options
      * @param  int  $lastRestart
      */
     protected function stopIfNecessary(WorkerOptions $options, $lastRestart)
@@ -209,8 +200,8 @@ class Worker
      *
      * @param  string  $connectionName
      * @param  string  $queue
-     * @param  \Illuminate\Queue\WorkerOptions  $options
-     * @return void
+     * @param  \Sirius\Queue\WorkerOptions  $options
+     *
      */
     public function runNextJob($connectionName, $queue, WorkerOptions $options)
     {
@@ -231,9 +222,10 @@ class Worker
     /**
      * Get the next job from the queue connection.
      *
-     * @param  \Illuminate\Contracts\Queue\Queue  $connection
+     * @param  \Sirius\Queue\Contracts\Queue  $connection
      * @param  string  $queue
-     * @return \Illuminate\Contracts\Queue\Job|null
+     *
+     * @return \Sirius\Queue\Jobs\Job|null
      */
     protected function getNextJob($connection, $queue)
     {
@@ -244,11 +236,9 @@ class Worker
                 }
             }
         } catch (Exception $e) {
-            $this->exceptions->report($e);
 
             $this->stopWorkerIfLostConnection($e);
         } catch (Throwable $e) {
-            $this->exceptions->report($e = new FatalThrowableError($e));
 
             $this->stopWorkerIfLostConnection($e);
         }
@@ -257,21 +247,20 @@ class Worker
     /**
      * Process the given job.
      *
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  string  $connectionName
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\WorkerOptions  $options
+     *
      * @return void
      */
     protected function runJob($job, $connectionName, WorkerOptions $options)
     {
         try {
-            return $this->process($connectionName, $job, $options);
+            $this->process($connectionName, $job, $options);
         } catch (Exception $e) {
-            $this->exceptions->report($e);
 
             $this->stopWorkerIfLostConnection($e);
         } catch (Throwable $e) {
-            $this->exceptions->report($e = new FatalThrowableError($e));
 
             $this->stopWorkerIfLostConnection($e);
         }
@@ -294,8 +283,8 @@ class Worker
      * Process the given job from the queue.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\Jobs\Job  $job
+     * @param  \Sirius\Queue\WorkerOptions  $options
      * @return void
      *
      * @throws \Throwable
@@ -331,8 +320,8 @@ class Worker
      * Handle an exception that occurred while the job was running.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
-     * @param  \Illuminate\Queue\WorkerOptions  $options
+     * @param  \Sirius\Queue\Jobs\Job  $job
+     * @param  \Sirius\Queue\WorkerOptions  $options
      * @param  \Exception  $e
      * @return void
      *
@@ -371,7 +360,7 @@ class Worker
      * This will likely be because the job previously exceeded a timeout.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  int  $maxTries
      * @return void
      */
@@ -389,7 +378,7 @@ class Worker
             return;
         }
 
-        $this->failJob($connectionName, $job, $e = new MaxAttemptsExceededException(
+        $this->failJob($connectionName, $job, $e = new ManuallyFailedException(
             'A queued job has been attempted too many times or run too long. The job may have previously timed out.'
         ));
 
@@ -400,7 +389,7 @@ class Worker
      * Mark the given job as failed if it has exceeded the maximum allowed attempts.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  int  $maxTries
      * @param  \Exception  $e
      * @return void
@@ -422,20 +411,20 @@ class Worker
      * Mark the given job as failed and raise the relevant event.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  \Exception  $e
      * @return void
      */
     protected function failJob($connectionName, $job, $e)
     {
-        return FailingJob::handle($connectionName, $job, $e);
+        FailingJob::handle($connectionName, $job, $e);
     }
 
     /**
      * Raise the before queue job event.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @return void
      */
     protected function raiseBeforeJobEvent($connectionName, $job)
@@ -449,7 +438,7 @@ class Worker
      * Raise the after queue job event.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @return void
      */
     protected function raiseAfterJobEvent($connectionName, $job)
@@ -463,7 +452,7 @@ class Worker
      * Raise the exception occurred queue job event.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  \Exception  $e
      * @return void
      */
@@ -478,7 +467,7 @@ class Worker
      * Raise the failed queue job event.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  \Exception  $e
      * @return void
      */
@@ -507,9 +496,7 @@ class Worker
      */
     protected function getTimestampOfLastQueueRestart()
     {
-        if ($this->cache) {
-            return $this->cache->get('illuminate:queue:restart');
-        }
+        return null;
     }
 
     /**
@@ -598,20 +585,9 @@ class Worker
     }
 
     /**
-     * Set the cache repository implementation.
-     *
-     * @param  \Illuminate\Contracts\Cache\Repository  $cache
-     * @return void
-     */
-    public function setCache(CacheContract $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    /**
      * Get the queue manager instance.
      *
-     * @return \Illuminate\Queue\QueueManager
+     * @return \Sirius\Queue\QueueManager
      */
     public function getManager()
     {
@@ -621,7 +597,8 @@ class Worker
     /**
      * Set the queue manager instance.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Sirius\Queue\QueueManager  $manager
+     *
      * @return void
      */
     public function setManager(QueueManager $manager)

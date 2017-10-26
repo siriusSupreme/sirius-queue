@@ -2,7 +2,7 @@
 
 namespace Sirius\Queue\Traits;
 
-use Sirius\Queue\Contracts\Job as JobContract;
+use Sirius\Queue\Jobs\Job;
 use Sirius\Queue\Jobs\FailingJob;
 
 trait InteractsWithQueue
@@ -10,7 +10,7 @@ trait InteractsWithQueue
     /**
      * The underlying queue job instance.
      *
-     * @var \Sirius\Queue\Contracts\Job
+     * @var \Sirius\Queue\Jobs\Job
      */
     protected $job;
 
@@ -57,17 +57,17 @@ trait InteractsWithQueue
     public function release($delay = 0)
     {
         if ($this->job) {
-            return $this->job->release($delay);
+            $this->job->release($delay);
         }
     }
 
     /**
      * Set the base queue job instance.
      *
-     * @param  \Sirius\Queue\Contracts\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @return $this
      */
-    public function setJob(JobContract $job)
+    public function setJob(Job $job)
     {
         $this->job = $job;
 

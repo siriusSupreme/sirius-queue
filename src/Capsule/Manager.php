@@ -2,10 +2,10 @@
 
 namespace Sirius\Queue\Capsule;
 
+use Sirius\Capsule\CapsuleManager;
 use Sirius\Queue\QueueManager;
 use Sirius\Container\Container;
 use Sirius\Queue\QueueServiceProvider;
-use Sirius\Queue\Traits\CapsuleManagerTrait;
 
 /**
  * @mixin \Sirius\Queue\QueueManager
@@ -13,7 +13,7 @@ use Sirius\Queue\Traits\CapsuleManagerTrait;
  */
 class Manager
 {
-    use CapsuleManagerTrait;
+    use CapsuleManager;
 
     /**
      * The queue manager instance.
@@ -49,7 +49,7 @@ class Manager
      */
     protected function setupDefaultConfiguration()
     {
-        $this->container['config']['default'] = 'default';
+        $this->getConfigInstance()['default'] = 'default';
     }
 
     /**
@@ -150,7 +150,7 @@ class Manager
      */
     public function addConnection(array $config, $name = 'default')
     {
-        $this->container['config']["connections.{$name}"] = $config;
+        $this->getConfigInstance()["connections.{$name}"] = $config;
     }
 
     /**

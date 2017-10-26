@@ -23,7 +23,7 @@ class Looping
      *
      * @param  string  $connectionName
      * @param  string  $queue
-     * @return void
+     *
      */
     public function __construct($connectionName, $queue)
     {

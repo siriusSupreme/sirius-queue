@@ -19,6 +19,7 @@
     "php": ">=7.0.0",
     "aws/aws-sdk-php": "^3.36",
     "pda/pheanstalk": "^3.1",
+    "siriussupreme/sirius-capsule": "^1.0",
     "siriussupreme/sirius-container": "^1.0",
     "siriussupreme/sirius-encrypt": "^1.0",
     "siriussupreme/sirius-pipeline": "^1.0",

@@ -23,7 +23,7 @@ class JobProcessed
      *
      * @param  string  $connectionName
      * @param  \Sirius\Queue\Jobs\Job  $job
-     * @return void
+     *
      */
     public function __construct($connectionName, $job)
     {

@@ -161,7 +161,7 @@ class QueueServiceProvider
     {
         $this->container->singleton('queue.worker', function () {
             return new Worker(
-                $this->container['queue'], $this->container['events'], $this->container[ExceptionHandler::class]
+                $this->container['queue'], $this->container['events']
             );
         });
     }

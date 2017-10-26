@@ -31,7 +31,7 @@ class JobFailed
      * @param  string  $connectionName
      * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  \Exception  $exception
-     * @return void
+     *
      */
     public function __construct($connectionName, $job, $exception)
     {

@@ -4,11 +4,9 @@ namespace Sirius\Queue\Queues;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Job as PheanstalkJob;
-use Sirius\Queue\Abstracts\Queue;
 use Sirius\Queue\Jobs\BeanstalkdJob;
-use Sirius\Queue\Contracts\Queue as QueueContract;
 
-class BeanstalkdQueue extends Queue implements QueueContract
+class BeanstalkdQueue extends Queue
 {
     /**
      * The Pheanstalk instance.
@@ -125,6 +123,8 @@ class BeanstalkdQueue extends Queue implements QueueContract
                 $this->container, $this->pheanstalk, $job, $this->connectionName, $queue
             );
         }
+
+        return null;
     }
 
     /**

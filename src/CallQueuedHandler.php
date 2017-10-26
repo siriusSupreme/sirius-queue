@@ -4,26 +4,24 @@ namespace Sirius\Queue;
 
 use Exception;
 use ReflectionClass;
-use Sirius\Queue\Contracts\Job;
-use Sirius\Queue\Jobs\FailingJob;
-use Sirius\Queue\Traits\InteractsWithQueue;
-use Sirius\Bus\Contracts\Dispatcher;
-use function Sirius\Support\class_uses_recursive;
+use Illuminate\Contracts\Queue\Job;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CallQueuedHandler
 {
     /**
      * The bus dispatcher implementation.
      *
-     * @var \Sirius\Bus\Contracts\Dispatcher
+     * @var \Illuminate\Contracts\Bus\Dispatcher
      */
     protected $dispatcher;
 
     /**
      * Create a new handler instance.
      *
-     * @param  \Sirius\Bus\Contracts\Dispatcher  $dispatcher
-     *
+     * @param  \Illuminate\Contracts\Bus\Dispatcher  $dispatcher
+     * @return void
      */
     public function __construct(Dispatcher $dispatcher)
     {
@@ -33,9 +31,9 @@ class CallQueuedHandler
     /**
      * Handle the queued job.
      *
-     * @param  \Sirius\Queue\Contracts\Job  $job
+     * @param  \Illuminate\Contracts\Queue\Job  $job
      * @param  array  $data
-     *
+     * @return void
      */
     public function call(Job $job, array $data)
     {
@@ -43,7 +41,7 @@ class CallQueuedHandler
             $command = $this->setJobInstanceIfNecessary(
                 $job, unserialize($data['command'])
             );
-        } catch (\RuntimeException $e) {
+        } catch (ModelNotFoundException $e) {
             return $this->handleModelNotFound($job, $e);
         }
 
@@ -63,7 +61,7 @@ class CallQueuedHandler
     /**
      * Resolve the handler for the given command.
      *
-     * @param  \Sirius\Queue\Contracts\Job  $job
+     * @param  \Illuminate\Contracts\Queue\Job  $job
      * @param  mixed  $command
      * @return mixed
      */
@@ -81,7 +79,7 @@ class CallQueuedHandler
     /**
      * Set the job instance of the given class if necessary.
      *
-     * @param  \Sirius\Queue\Contracts\Job  $job
+     * @param  \Illuminate\Contracts\Queue\Job  $job
      * @param  mixed  $instance
      * @return mixed
      */
@@ -110,9 +108,9 @@ class CallQueuedHandler
     /**
      * Handle a model not found exception.
      *
-     * @param  \Sirius\Queue\Contracts\Job  $job
+     * @param  \Illuminate\Contracts\Queue\Job  $job
      * @param  \Exception  $e
-     *
+     * @return void
      */
     protected function handleModelNotFound(Job $job, $e)
     {
@@ -129,7 +127,7 @@ class CallQueuedHandler
             return $job->delete();
         }
 
-        FailingJob::handle(
+        return FailingJob::handle(
             $job->getConnectionName(), $job, $e
         );
     }

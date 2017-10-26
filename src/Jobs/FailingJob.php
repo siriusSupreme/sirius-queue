@@ -3,7 +3,9 @@
 namespace Sirius\Queue\Jobs;
 
 use Sirius\Container\Container;
-use Sirius\Event\Contracts\Dispatcher;
+use Sirius\Queue\Events\JobFailed;
+use Sirius\Event\Dispatcher;
+use Sirius\Queue\Exceptions\ManuallyFailedException;
 
 class FailingJob
 {
@@ -11,8 +13,9 @@ class FailingJob
      * Delete the job, call the "failed" method, and raise the failed job event.
      *
      * @param  string  $connectionName
-     * @param  \Sirius\Queue\Abstracts\Job  $job
+     * @param  \Sirius\Queue\Jobs\Job  $job
      * @param  \Exception $e
+     *
      * @return void
      */
     public static function handle($connectionName, $job, $e = null)
@@ -31,14 +34,16 @@ class FailingJob
 
             $job->failed($e);
         } finally {
-            // TODO
+            static::events()->dispatch(new JobFailed(
+                $connectionName, $job, $e ?: new ManuallyFailedException()
+            ));
         }
     }
 
     /**
      * Get the event dispatcher instance.
      *
-     * @return \Sirius\Event\Contracts\Dispatcher
+     * @return \Sirius\Event\Dispatcher
      */
     protected static function events()
     {

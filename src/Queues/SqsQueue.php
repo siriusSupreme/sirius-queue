@@ -4,10 +4,8 @@ namespace Sirius\Queue\Queues;
 
 use Aws\Sqs\SqsClient;
 use Sirius\Queue\Jobs\SqsJob;
-use Sirius\Queue\Abstracts\Queue;
-use Sirius\Queue\Contracts\Queue as QueueContract;
 
-class SqsQueue extends Queue implements QueueContract
+class SqsQueue extends Queue
 {
     /**
      * The Amazon SQS instance.
@@ -128,6 +126,8 @@ class SqsQueue extends Queue implements QueueContract
                 $this->connectionName, $queue
             );
         }
+
+        return null;
     }
 
     /**

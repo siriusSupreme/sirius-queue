@@ -4,37 +4,20 @@ namespace Sirius\Queue;
 
 use Closure;
 use InvalidArgumentException;
-use Sirius\Container\Container;
 use Sirius\Queue\Contracts\Factory as FactoryContract;
 use Sirius\Queue\Contracts\Monitor as MonitorContract;
-use Sirius\Support\Contracts\Repository;
-use Sirius\Support\Repository as Config;
 
 /**
- * @mixin \Sirius\Queue\Contracts\Queue
+ * @mixin \Illuminate\Contracts\Queue\Queue
  */
 class QueueManager implements FactoryContract, MonitorContract
 {
     /**
      * The application instance.
      *
-     * @var \Sirius\Container\Container
+     * @var \Illuminate\Foundation\Application
      */
-    protected $container;
-
-  /**
-   * Config（Repository）
-   *
-   * @var \Sirius\Support\Contracts\Repository|null
-   */
-  protected $config = null;
-
-  /**
-   * 队列 管理器 实例
-   *
-   * @var null|self
-   */
-  private static $instance = null;
+    protected $app;
 
     /**
      * The array of resolved queue connections.
@@ -53,47 +36,79 @@ class QueueManager implements FactoryContract, MonitorContract
     /**
      * Create a new queue manager instance.
      *
-     * @param  \Sirius\Container\Container|null  $container
-     * @param  \Sirius\Support\Contracts\Repository|array
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return void
      */
-    public function __construct($container=null,$config=[])
+    public function __construct($app)
     {
-
-//      加载默认配置
-      $defaults = require __DIR__ . '/config.php';
-//      配置 数组化
-      if ( $config instanceof Repository ) {
-        $config = $config->all();
-      } else {
-        $config = (array)$config;
-      }
-//      合并配置
-      $config = array_merge( $defaults, $config );
-
-      $this->config = new Config( $config );
-
-      self::$instance = $this;
-
-        $this->container = $container??new Container;
+        $this->app = $app;
     }
 
-
-  /**
-   * 获取 队列 管理器 实例
-   *
-   * @param \Sirius\Container\Container|null $container
-   * @param \Sirius\Support\Contracts\Repository|array $config
-   * @param bool $force
-   *
-   * @return null|QueueManager
-   */
-  public static function getInstance( $container=null, $config = [], $force = false ) {
-    if ( is_null( self::$instance ) || $force === true ) {
-      self::$instance = new self( $container, $config );
+    /**
+     * Register an event listener for the before job event.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function before($callback)
+    {
+        $this->app['events']->listen(Events\JobProcessing::class, $callback);
     }
 
-    return self::$instance;
-  }
+    /**
+     * Register an event listener for the after job event.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function after($callback)
+    {
+        $this->app['events']->listen(Events\JobProcessed::class, $callback);
+    }
+
+    /**
+     * Register an event listener for the exception occurred job event.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function exceptionOccurred($callback)
+    {
+        $this->app['events']->listen(Events\JobExceptionOccurred::class, $callback);
+    }
+
+    /**
+     * Register an event listener for the daemon queue loop.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function looping($callback)
+    {
+        $this->app['events']->listen(Events\Looping::class, $callback);
+    }
+
+    /**
+     * Register an event listener for the failed job event.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function failing($callback)
+    {
+        $this->app['events']->listen(Events\JobFailed::class, $callback);
+    }
+
+    /**
+     * Register an event listener for the daemon queue stopping.
+     *
+     * @param  mixed  $callback
+     * @return void
+     */
+    public function stopping($callback)
+    {
+        $this->app['events']->listen(Events\WorkerStopping::class, $callback);
+    }
 
     /**
      * Determine if the driver is connected.
@@ -110,7 +125,7 @@ class QueueManager implements FactoryContract, MonitorContract
      * Resolve a queue connection instance.
      *
      * @param  string  $name
-     * @return \Sirius\Queue\Contracts\Queue
+     * @return \Illuminate\Contracts\Queue\Queue
      */
     public function connection($name = null)
     {
@@ -122,7 +137,7 @@ class QueueManager implements FactoryContract, MonitorContract
         if (! isset($this->connections[$name])) {
             $this->connections[$name] = $this->resolve($name);
 
-            $this->connections[$name]->setContainer($this->container);
+            $this->connections[$name]->setContainer($this->app);
         }
 
         return $this->connections[$name];
@@ -132,7 +147,7 @@ class QueueManager implements FactoryContract, MonitorContract
      * Resolve a queue connection.
      *
      * @param  string  $name
-     * @return \Sirius\Queue\Contracts\Queue
+     * @return \Illuminate\Contracts\Queue\Queue
      */
     protected function resolve($name)
     {
@@ -147,7 +162,7 @@ class QueueManager implements FactoryContract, MonitorContract
      * Get the connector for a given driver.
      *
      * @param  string  $driver
-     * @return \Sirius\Queue\Contracts\ConnectorInterface
+     * @return \Illuminate\Queue\Connectors\ConnectorInterface
      *
      * @throws \InvalidArgumentException
      */
@@ -165,11 +180,11 @@ class QueueManager implements FactoryContract, MonitorContract
      *
      * @param  string    $driver
      * @param  \Closure  $resolver
-     *
+     * @return void
      */
     public function extend($driver, Closure $resolver)
     {
-      $this->addConnector($driver, $resolver);
+        return $this->addConnector($driver, $resolver);
     }
 
     /**
@@ -193,7 +208,7 @@ class QueueManager implements FactoryContract, MonitorContract
     protected function getConfig($name)
     {
         if (! is_null($name) && $name !== 'null') {
-            return $this->config["connections.{$name}"];
+            return $this->app['config']["queue.connections.{$name}"];
         }
 
         return ['driver' => 'null'];
@@ -206,7 +221,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function getDefaultDriver()
     {
-        return $this->config['default'];
+        return $this->app['config']['queue.default'];
     }
 
     /**
@@ -217,7 +232,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function setDefaultDriver($name)
     {
-        $this->config['default'] = $name;
+        $this->app['config']['queue.default'] = $name;
     }
 
     /**
@@ -229,6 +244,16 @@ class QueueManager implements FactoryContract, MonitorContract
     public function getName($connection = null)
     {
         return $connection ?: $this->getDefaultDriver();
+    }
+
+    /**
+     * Determine if the application is in maintenance mode.
+     *
+     * @return bool
+     */
+    public function isDownForMaintenance()
+    {
+        return $this->app->isDownForMaintenance();
     }
 
     /**

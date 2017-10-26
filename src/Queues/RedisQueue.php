@@ -2,14 +2,12 @@
 
 namespace Sirius\Queue\Queues;
 
-use Sirius\Queue\Abstracts\Queue;
 use Sirius\Support\Str;
 use Sirius\Queue\Jobs\RedisJob;
 use Sirius\Queue\LuaScripts;
 use Sirius\Redis\Contracts\Factory as Redis;
-use Sirius\Queue\Contracts\Queue as QueueContract;
 
-class RedisQueue extends Queue implements QueueContract
+class RedisQueue extends Queue
 {
     /**
      * The Redis factory implementation.

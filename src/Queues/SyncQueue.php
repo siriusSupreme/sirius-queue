@@ -3,14 +3,12 @@
 namespace Sirius\Queue\Queues;
 
 use Exception;
-use Sirius\Queue\Abstracts\Queue;
-use Sirius\Queue\Contracts\Queue as QueueContract;
 use Sirius\Queue\Jobs\FailingJob;
 use Sirius\Queue\Jobs\SyncJob;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
 
-class SyncQueue extends Queue implements QueueContract
+class SyncQueue extends Queue
 {
     /**
      * Get the size of the queue.
@@ -63,7 +61,7 @@ class SyncQueue extends Queue implements QueueContract
     /**
      * Handle an exception that occurred while processing a job.
      *
-     * @param  \Sirius\Queue\Abstracts\Job  $queueJob
+     * @param  \Sirius\Queue\Jobs\Job  $queueJob
      * @param  \Exception  $e
      *
      * @return void

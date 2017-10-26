@@ -22,6 +22,8 @@
     "siriussupreme/sirius-capsule": "^1.0",
     "siriussupreme/sirius-container": "^1.0",
     "siriussupreme/sirius-encrypt": "^1.0",
+    "siriussupreme/sirius-event": "^1.0",
+    "siriussupreme/sirius-bus": "^1.0",
     "siriussupreme/sirius-pipeline": "^1.0",
     "siriussupreme/sirius-redis": "^1.0",
     "siriussupreme/sirius-support": "^1.0",
